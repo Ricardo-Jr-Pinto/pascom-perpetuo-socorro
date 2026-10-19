@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pascom - Paróquia N. Sra. do Perpétuo Socorro | Diocese do Xingu</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Inter + Playfair Display para toques solenes) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mariano: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#0f172a',
+                        },
+                        dourado: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 0.75px, transparent 0.75px), radial-gradient(#cbd5e1 0.75px, #f8fafc 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+        }
+        .toast-animate {
+            animation: fadeInOut 3s forwards;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 hidden bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-dourado-500">
+        <i class="fas fa-check-circle text-dourado-400 text-xl"></i>
+        <span id="toast-message" class="text-sm font-medium">Ação realizada com sucesso!</span>
+    </div>
+
+    <!-- HEADER / NAVEGAÇÃO -->
+    <header class="sticky top-0 z-40 bg-mariano-900/95 backdrop-blur-md text-white border-b border-dourado-500/30 shadow-md transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- BRANDING -->
+                <a href="#" class="flex items-center space-x-3 group">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-mariano-600 to-dourado-500 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                        <div class="w-full h-full bg-mariano-900 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cross text-dourado-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="font-serif font-bold text-base sm:text-lg leading-tight text-white group-hover:text-dourado-400 transition-colors">
+                            N. Sra. do Perpétuo Socorro
+                        </div>
+                        <div class="text-xs text-blue-200 tracking-wider uppercase flex items-center gap-1.5">
+                            <span>Diocese do Xingu</span>
+                            <span class="inline-block w-1 h-1 rounded-full bg-dourado-400"></span>
+                            <span class="text-dourado-400 font-semibold">PASCOM</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- DESKTOP NAV -->
+                <nav class="hidden lg:flex items-center space-x-6 text-sm font-medium">
+                    <a href="#inicio" class="hover:text-dourado-400 transition-colors py-1">Início</a>
+                    <a href="#horarios" class="hover:text-dourado-400 transition-colors py-1">Horários</a>
+                    <a href="#avisos" class="hover:text-dourado-400 transition-colors py-1">Avisos</a>
+                    <a href="#liturgia" class="hover:text-dourado-400 transition-colors py-1">Liturgia & Oração</a>
+                    <a href="#galeria" class="hover:text-dourado-400 transition-colors py-1">Galeria</a>
+                    <a href="#pascom" class="hover:text-dourado-400 transition-colors py-1">Seja Pascom</a>
+                    <a href="#dizimo-contato" class="bg-dourado-500 hover:bg-dourado-600 text-mariano-900 px-4 py-2 rounded-full font-semibold transition-all shadow-md hover:shadow-dourado-500/20">
+                        <i class="fas fa-heart mr-1.5"></i> Dízimo & PIX
+                    </a>
+                </nav>
+
+                <!-- MOBILE MENU BUTTON -->
+                <div class="lg:hidden">
+                    <button id="mobile-menu-btn" class="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-mariano-800 focus:outline-none" aria-label="Abrir Menu">
+                        <i class="fas fa-bars text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOBILE MENU DROPDOWN -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-mariano-900 border-b border-mariano-800 px-4 pt-2 pb-6 space-y-3">
+            <a href="#inicio" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Início</a>
+            <a href="#horarios" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Horários de Missa</a>
+            <a href="#avisos" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Notícias & Avisos</a>
+            <a href="#liturgia" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Liturgia & Pedidos de Oração</a>
+            <a href="#galeria" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Galeria Pascom</a>
+            <a href="#pascom" class="mobile-link block py-2 text-slate-200 hover:text-dourado-400 font-medium">Seja Pascom</a>
+            <a href="#dizimo-contato" class="mobile-link block py-2.5 text-center bg-dourado-500 text-mariano-900 font-bold rounded-lg mt-2">
+                <i class="fas fa-heart mr-1"></i> Dízimo / Ofertas PIX
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="inicio" class="relative bg-mariano-900 text-white overflow-hidden py-20 lg:py-28">
+        <!-- Fundo decorativo com sobreposição gradiente -->
+        <div class="absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1600&q=80');"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-mariano-900 via-mariano-900/90 to-transparent z-0"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center space-x-2 bg-dourado-500/20 border border-dourado-400/40 px-3 py-1.5 rounded-full text-dourado-300 text-xs sm:text-sm font-semibold mb-6">
+                    <i class="fas fa-church"></i>
+                    <span>Comunicação a Serviço da Evangelização</span>
+                </div>
+                <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                    Comunicar o Amor e a Fé na <span class="text-transparent bg-clip-text bg-gradient-to-r from-dourado-400 to-amber-200">Amazônia e no Xingu</span>
+                </h1>
+                <p class="text-slate-300 text-base sm:text-lg mb-8 leading-relaxed">
+                    Seja bem-vindo à Paróquia Nossa Senhora do Perpétuo Socorro. Em comunhão com a Diocese do Xingu, nossa missão é ser a voz da esperança, promovendo a união, a liturgia e a partilha entre todas as nossas comunidades.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#horarios" class="bg-dourado-500 hover:bg-dourado-600 text-mariano-900 font-bold px-6 py-3.5 rounded-xl transition-all shadow-lg hover:shadow-dourado-500/20 flex items-center gap-2">
+                        <i class="far fa-clock"></i> Horários de Missa
+                    </a>
+                    <a href="#dizimo-contato" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold px-6 py-3.5 rounded-xl transition-all backdrop-blur-sm flex items-center gap-2">
+                        <i class="fas fa-qrcode text-dourado-400"></i> Chave PIX Dízimo
+                    </a>
+                    <a href="#galeria" class="bg-mariano-800 hover:bg-mariano-700 text-blue-100 font-semibold px-6 py-3.5 rounded-xl transition-all flex items-center gap-2 border border-blue-500/30">
+                        <i class="fas fa-play-circle text-red-400"></i> Transmissões
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner Inferior Informativo -->
+        <div class="relative z-10 mt-16 border-t border-white/10 bg-mariano-800/50 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center md:text-left text-sm">
+                    <div class="flex items-center justify-center md:justify-start space-x-3 text-slate-300">
+                        <i class="fas fa-map-marker-alt text-dourado-400 text-lg"></i>
+                        <span>Altamira - Pará / Região do Xingu</span>
+                    </div>
+                    <div class="flex items-center justify-center md:justify-start space-x-3 text-slate-300">
+                        <i class="fas fa-cross text-dourado-400 text-lg"></i>
+                        <span>Padroeira: N. Sra. do Perpétuo Socorro</span>
+                    </div>
+                    <div class="flex items-center justify-center md:justify-start space-x-3 text-slate-300">
+                        <i class="fas fa-broadcast-tower text-dourado-400 text-lg"></i>
+                        <span>Pascom em Ação na Amazônia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HORÁRIOS DE MISSA E CONFISSÕES -->
+    <section id="horarios" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-mariano-600 uppercase mb-2">Encontro com Deus</h2>
+                <p class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Horários de Missas e Celebrações</p>
+                <div class="w-20 h-1 bg-dourado-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Matriz -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-6 flex flex-col justify-between hover:shadow-xl transition-shadow relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-2 bg-mariano-700"></div>
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-mariano-50 text-mariano-700 flex items-center justify-center text-xl font-bold mb-4">
+                            <i class="fas fa-church"></i>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Igreja Matriz</h3>
+                        <p class="text-xs text-slate-500 mb-4">Sede Paroquial</p>
+                        <ul class="space-y-3 text-sm text-slate-600 mb-6">
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Quarta-feira</span>
+                                <span class="bg-mariano-50 text-mariano-700 px-2.5 py-1 rounded-md font-semibold text-xs">19h30</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Sábado</span>
+                                <span class="bg-mariano-50 text-mariano-700 px-2.5 py-1 rounded-md font-semibold text-xs">19h00</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Domingo (Manhã)</span>
+                                <span class="bg-mariano-50 text-mariano-700 px-2.5 py-1 rounded-md font-semibold text-xs">07h30</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="font-medium text-slate-800">Domingo (Noite)</span>
+                                <span class="bg-mariano-50 text-mariano-700 px-2.5 py-1 rounded-md font-semibold text-xs">19h30</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl text-xs text-slate-500 flex items-center space-x-2">
+                        <i class="fas fa-info-circle text-mariano-600"></i>
+                        <span>Novenas Perpétuas todas as quartas às 19h</span>
+                    </div>
+                </div>
+
+                <!-- Confissões -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-6 flex flex-col justify-between hover:shadow-xl transition-shadow relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-2 bg-dourado-500"></div>
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-dourado-600 flex items-center justify-center text-xl font-bold mb-4">
+                            <i class="fas fa-hands-praying"></i>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Confissões e Atendimento</h3>
+                        <p class="text-xs text-slate-500 mb-4">Sacramento da Reconciliação</p>
+                        <ul class="space-y-3 text-sm text-slate-600 mb-6">
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Quinta-feira</span>
+                                <span class="bg-amber-50 text-dourado-700 px-2.5 py-1 rounded-md font-semibold text-xs">15h às 18h</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Sexta-feira</span>
+                                <span class="bg-amber-50 text-dourado-700 px-2.5 py-1 rounded-md font-semibold text-xs">09h às 11h30</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="font-medium text-slate-800">Sábado</span>
+                                <span class="bg-amber-50 text-dourado-700 px-2.5 py-1 rounded-md font-semibold text-xs">16h às 18h</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-amber-50/60 p-3 rounded-xl text-xs text-dourado-700 flex items-center space-x-2">
+                        <i class="fas fa-heart text-dourado-600"></i>
+                        <span>Atendimento com agendamento prévio na secretaria</span>
+                    </div>
+                </div>
+
+                <!-- Adoração & Comunidades -->
+                <div class="bg-white rounded-2xl shadow-md border border-slate-200/80 p-6 flex flex-col justify-between hover:shadow-xl transition-shadow relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-2 bg-blue-500"></div>
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold mb-4">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                        <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Adoração & Comunidades</h3>
+                        <p class="text-xs text-slate-500 mb-4">Momentos Especiais</p>
+                        <ul class="space-y-3 text-sm text-slate-600 mb-6">
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Adoração ao Santíssimo</span>
+                                <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs">1ª Quinta (18h)</span>
+                            </li>
+                            <li class="flex justify-between items-center border-b border-slate-100 pb-2">
+                                <span class="font-medium text-slate-800">Comunidades Urbanas</span>
+                                <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs">Sáb / Dom</span>
+                            </li>
+                            <li class="flex justify-between items-center">
+                                <span class="font-medium text-slate-800">Comunidades Ribeirinhas</span>
+                                <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-semibold text-xs">Itinerante</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-xl text-xs text-blue-700 flex items-center space-x-2">
+                        <i class="fas fa-water text-blue-600"></i>
+                        <span>Consulte a agenda mensal das missas ribeirinhas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTÍCIAS E AVISOS PAROQUIAIS -->
+    <section id="avisos" class="py-20 bg-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <h2 class="text-xs font-bold tracking-widest text-mariano-600 uppercase mb-2">Comunicação Viva</h2>
+                    <p class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Notícias e Avisos Paroquiais</p>
+                </div>
+                <!-- FILTROS -->
+                <div class="mt-6 md:mt-0 flex flex-wrap gap-2" id="filter-buttons">
+                    <button onclick="filterPosts('todos')" class="filter-btn active bg-mariano-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-sm">Todos</button>
+                    <button onclick="filterPosts('eventos')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 transition-all">Eventos</button>
+                    <button onclick="filterPosts('catequese')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 transition-all">Catequese</button>
+                    <button onclick="filterPosts('pastoral')" class="filter-btn bg-white hover:bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-medium border border-slate-200 transition-all">Pastorais</button>
+                </div>
+            </div>
+
+            <!-- CARDS DE NOTÍCIAS -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="posts-grid">
+                
+                <!-- CARD 1 -->
+                <article class="post-card bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-xl" data-category="eventos">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=800&q=80" alt="Festa da Padroeira" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-mariano-900/80 backdrop-blur-md text-dourado-400 text-xs font-semibold px-3 py-1 rounded-full border border-dourado-500/30">Eventos</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="text-xs text-slate-400 mb-2 flex items-center gap-2">
+                                <i class="far fa-calendar-alt"></i> 15 de Outubro, 2026
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-slate-900 mb-2 leading-snug hover:text-mariano-700 cursor-pointer">
+                                Preparativos para os Festejos de N. Sra. do Perpétuo Socorro
+                            </h3>
+                            <p class="text-slate-600 text-sm line-clamp-3 mb-4">
+                                Toda a comunidade está convidada a participar das comissões organizadoras do novenário e quermesse deste ano.
+                            </p>
+                        </div>
+                        <a href="#contato" class="text-mariano-600 hover:text-mariano-800 text-sm font-bold inline-flex items-center gap-1">
+                            Saiba mais <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- CARD 2 -->
+                <article class="post-card bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-xl" data-category="catequese">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80" alt="Inscrições Catequese" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-mariano-900/80 backdrop-blur-md text-dourado-400 text-xs font-semibold px-3 py-1 rounded-full border border-dourado-500/30">Catequese</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="text-xs text-slate-400 mb-2 flex items-center gap-2">
+                                <i class="far fa-calendar-alt"></i> 10 de Outubro, 2026
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-slate-900 mb-2 leading-snug hover:text-mariano-700 cursor-pointer">
+                                Abertura das Inscrições para a Catequese de Eucaristia e Crisma
+                            </h3>
+                            <p class="text-slate-600 text-sm line-clamp-3 mb-4">
+                                Pais e responsáveis devem procurar a Secretaria Paroquial no horário comercial apresentando a certidão de batismo.
+                            </p>
+                        </div>
+                        <a href="#contato" class="text-mariano-600 hover:text-mariano-800 text-sm font-bold inline-flex items-center gap-1">
+                            Saiba mais <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- CARD 3 -->
+                <article class="post-card bg-white rounded-2xl shadow-md overflow-hidden border border-slate-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-xl" data-category="pastoral">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=800&q=80" alt="Encontro de Jovens" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                        <span class="absolute top-4 left-4 bg-mariano-900/80 backdrop-blur-md text-dourado-400 text-xs font-semibold px-3 py-1 rounded-full border border-dourado-500/30">Pastorais</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="text-xs text-slate-400 mb-2 flex items-center gap-2">
+                                <i class="far fa-calendar-alt"></i> 02 de Outubro, 2026
+                            </div>
+                            <h3 class="font-serif font-bold text-lg text-slate-900 mb-2 leading-snug hover:text-mariano-700 cursor-pointer">
+                                Retiro Paroquial de Juventude na Diocese do Xingu
+                            </h3>
+                            <p class="text-slate-600 text-sm line-clamp-3 mb-4">
+                                Um final de semana de espiritualidade, louvor e missão para os jovens de toda a região paroquial.
+                            </p>
+                        </div>
+                        <a href="#contato" class="text-mariano-600 hover:text-mariano-800 text-sm font-bold inline-flex items-center gap-1">
+                            Saiba mais <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- LITURGIA & MURAL DE INTENÇÕES -->
+    <section id="liturgia" class="py-20 bg-mariano-900 text-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                
+                <!-- ORAÇÃO A N. SRA. DO PERPÉTUO SOCORRO -->
+                <div class="bg-mariano-800/80 border border-dourado-500/30 p-8 rounded-3xl backdrop-blur-md shadow-2xl relative">
+                    <div class="absolute -top-5 left-8 bg-dourado-500 text-mariano-900 text-xs font-bold px-4 py-1.5 rounded-full shadow-md">
+                        <i class="fas fa-hands-praying"></i> Oração Paroquial
+                    </div>
+                    <h3 class="font-serif text-2xl font-bold text-dourado-400 mb-4 mt-2">
+                        Oração a Nossa Senhora do Perpétuo Socorro
+                    </h3>
+                    <div class="space-y-4 text-slate-200 text-sm sm:text-base leading-relaxed italic font-serif">
+                        <p>
+                            "Ó Mãe do Perpétuo Socorro, nós vos suplicamos com filial confiança: olhai benigna para a nossa comunidade da Paróquia do Perpétuo Socorro e para todo o povo da Diocese do Xingu."
+                        </p>
+                        <p>
+                            "Sede a nossa guia nos caminhos da fé, abençoai nossas famílias, protegei nossa floresta e os rios da Amazônia, e intercedei junto ao vosso Filho Jesus por nossas preces. Amém."
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+                        <span>Padroeira de nossa Paróquia</span>
+                        <span class="text-dourado-400 font-semibold">Rogai por nós!</span>
+                    </div>
+                </div>
+
+                <!-- INTENÇÕES DE ORAÇÃO (INTERATIVO) -->
+                <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl">
+                    <h3 class="font-serif text-2xl font-bold text-mariano-900 mb-2">
+                        Mural de Intenções de Oração
+                    </h3>
+                    <p class="text-slate-500 text-sm mb-6">
+                        Deixe aqui o seu pedido de oração. A equipe da Pascom e os fiéis rezarão por suas intenções nas próximas Missas.
+                    </p>
+
+                    <!-- Form de Envio -->
+                    <form id="pray-form" class="space-y-4 mb-8">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Seu Nome (opcional)</label>
+                            <input type="text" id="pray-name" placeholder="Ex.: Maria Souza (ou Anônimo)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-mariano-600 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Sua Intenção / Pedido de Prece *</label>
+                            <textarea id="pray-text" rows="3" required placeholder="Escreva aqui sua intenção de saúde, família, agradecimento..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-mariano-600 text-sm"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-mariano-800 hover:bg-mariano-900 text-white font-bold py-3 rounded-xl transition-all shadow-md flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane text-dourado-400"></i> Enviar Intenção
+                        </button>
+                    </form>
+
+                    <!-- Lista de Intenções -->
+                    <div class="border-t border-slate-200 pt-6">
+                        <h4 class="text-xs font-bold uppercase text-slate-500 tracking-wider mb-4 flex items-center justify-between">
+                            <span>Pedidos de Oração Recentes</span>
+                            <i class="fas fa-heart text-red-500"></i>
+                        </h4>
+                        <div id="prayers-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                            <!-- Preenchido via JS -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERIA DE FOTOS E MÍDIAS -->
+    <section id="galeria" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-xs font-bold tracking-widest text-mariano-600 uppercase mb-2">Registros da Nossa Fé</h2>
+                <p class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Galeria de Fotos Pascom</p>
+                <div class="w-20 h-1 bg-dourado-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <!-- GRADE DE FOTOS -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="relative group cursor-pointer overflow-hidden rounded-2xl shadow-md h-56" onclick="openLightbox('https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=1200&q=80', 'Celebração Eucarística na Matriz')">
+                    <img src="https://images.unsplash.com/photo-1548625149-fc4a29cf7092?auto=format&fit=crop&w=600&q=80" alt="Missa Matriz" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-mariano-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white p-4 text-center">
+                        <div>
+                            <i class="fas fa-search-plus text-2xl text-dourado-400 mb-1"></i>
+                            <p class="text-xs font-semibold">Missa Paroquial</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group cursor-pointer overflow-hidden rounded-2xl shadow-md h-56" onclick="openLightbox('https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=1200&q=80', 'Procissão de Nossa Senhora')">
+                    <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&w=600&q=80" alt="Procissão" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-mariano-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white p-4 text-center">
+                        <div>
+                            <i class="fas fa-search-plus text-2xl text-dourado-400 mb-1"></i>
+                            <p class="text-xs font-semibold">Procissão e Novenário</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group cursor-pointer overflow-hidden rounded-2xl shadow-md h-56" onclick="openLightbox('https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80', 'Encontro do Grupo de Jovens')">
+                    <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=600&q=80" alt="Grupo de Jovens" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-mariano-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white p-4 text-center">
+                        <div>
+                            <i class="fas fa-search-plus text-2xl text-dourado-400 mb-1"></i>
+                            <p class="text-xs font-semibold">Juventude Paroquial</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative group cursor-pointer overflow-hidden rounded-2xl shadow-md h-56" onclick="openLightbox('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80', 'Batismos nas Comunidades')">
+                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80" alt="Batismos" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-mariano-900/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white p-4 text-center">
+                        <div>
+                            <i class="fas fa-search-plus text-2xl text-dourado-400 mb-1"></i>
+                            <p class="text-xs font-semibold">Sacramentos nas Comunidades</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REDES SOCIAIS E TRANSMISSÃO -->
+            <div class="mt-12 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                <div>
+                    <h3 class="font-serif text-xl font-bold text-slate-900 mb-1">Acompanhe nossas Redes Sociais</h3>
+                    <p class="text-slate-600 text-sm">Assista às transmissões ao vivo e fique por dentro de todas as fotos e vídeos.</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="https://instagram.com" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 hover:opacity-90 transition-opacity">
+                        <i class="fab fa-instagram text-lg"></i> Instagram
+                    </a>
+                    <a href="https://youtube.com" target="_blank" class="bg-red-600 text-white font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 hover:bg-red-700 transition-colors">
+                        <i class="fab fa-youtube text-lg"></i> YouTube
+                    </a>
+                    <a href="https://facebook.com" target="_blank" class="bg-blue-600 text-white font-semibold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2 hover:bg-blue-700 transition-colors">
+                        <i class="fab fa-facebook-f text-lg"></i> Facebook
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox" class="fixed inset-0 z-50 bg-black/90 hidden items-center justify-center p-4">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl hover:text-dourado-400 focus:outline-none">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="max-w-4xl max-h-[90vh] flex flex-col items-center">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[75vh] rounded-xl shadow-2xl object-contain">
+            <p id="lightbox-caption" class="text-white text-sm font-medium mt-4 text-center"></p>
+        </div>
+    </div>
+
+    <!-- SEJA UM AGENTE PASCOM (RECRUTAMENTO) -->
+    <section id="pascom" class="py-20 bg-pattern">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-mariano-900 to-mariano-800 rounded-3xl p-8 sm:p-12 text-white shadow-2xl border border-dourado-500/30">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <div>
+                        <div class="inline-flex items-center space-x-2 bg-dourado-500/20 border border-dourado-400/40 px-3 py-1 rounded-full text-dourado-300 text-xs font-semibold mb-4">
+                            <i class="fas fa-camera"></i>
+                            <span>Pastoral da Comunicação</span>
+                        </div>
+                        <h2 class="font-serif text-3xl sm:text-4xl font-bold mb-4">
+                            Coloque os seus talentos a serviço do Evangelho!
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                            A Pascom da Paróquia N. Sra. do Perpétuo Socorro convida você para fazer parte da nossa equipe. Se você gosta de fotografia, redes sociais, transmissão ao vivo, redação ou design, seu lugar é conosco!
+                        </p>
+
+                        <!-- Áreas de Atuação -->
+                        <div class="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-200">
+                            <div class="flex items-center space-x-2 bg-mariano-700/50 p-3 rounded-xl border border-white/5">
+                                <i class="fas fa-camera text-dourado-400 text-lg"></i>
+                                <span>Fotografia & Vídeo</span>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-mariano-700/50 p-3 rounded-xl border border-white/5">
+                                <i class="fas fa-share-alt text-dourado-400 text-lg"></i>
+                                <span>Redes Sociais</span>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-mariano-700/50 p-3 rounded-xl border border-white/5">
+                                <i class="fas fa-video text-dourado-400 text-lg"></i>
+                                <span>Transmissão ao Vivo</span>
+                            </div>
+                            <div class="flex items-center space-x-2 bg-mariano-700/50 p-3 rounded-xl border border-white/5">
+                                <i class="fas fa-pen-nib text-dourado-400 text-lg"></i>
+                                <span>Redação & Arte</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FORMULÁRIO DE INSCRIÇÃO -->
+                    <div class="bg-white text-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl">
+                        <h3 class="font-serif text-xl font-bold text-mariano-900 mb-1">Inscrição de Voluntário</h3>
+                        <p class="text-slate-500 text-xs mb-6">Preencha seus dados para entrarmos em contato.</p>
+
+                        <form id="pascom-form" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nome Completo *</label>
+                                <input type="text" required placeholder="Seu nome" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-mariano-600 text-sm">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">WhatsApp / Tel *</label>
+                                    <input type="tel" required placeholder="(93) 99999-9999" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-mariano-600 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Área de Interesse</label>
+                                    <select class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-mariano-600 text-sm bg-white">
+                                        <option>Fotografia</option>
+                                        <option>Transmissão ao Vivo</option>
+                                        <option>Redes Sociais</option>
+                                        <option>Design / Artes</option>
+                                        <option>Redação de Notícias</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-dourado-500 hover:bg-dourado-600 text-mariano-900 font-bold py-3 rounded-xl transition-all shadow-md mt-2 flex items-center justify-center gap-2">
+                                <i class="fas fa-check"></i> Quero ser Agente Pascom
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DÍZIMO, CONTATO E LOCALIZAÇÃO -->
+    <section id="dizimo-contato" class="py-20 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- PIX E DÍZIMO -->
+                <div class="bg-white p-8 rounded-3xl shadow-md border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-dourado-700 flex items-center justify-center text-2xl">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-2xl font-bold text-slate-900">Dízimo e Ofertas</h3>
+                                <p class="text-xs text-slate-500">Gestão de Amor e Gratidão à Comunidade</p>
+                            </div>
+                        </div>
+
+                        <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                            O Dízimo é um ato de fé e coresponsabilidade com a evangelização, manutenção da nossa Igreja Matriz, apoio às Comunidades Ribeirinhas e obras sociais da Diocese do Xingu.
+                        </p>
+
+                        <!-- CARTÃO CHAVE PIX -->
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl mb-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase">Chave PIX Paroquial (CNPJ)</span>
+                                <span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-md">Oficial</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-2 bg-white border border-slate-200 p-3 rounded-xl">
+                                <code id="pix-key" class="text-xs sm:text-sm font-mono text-mariano-900 font-bold truncate">00.000.000/0001-00</code>
+                                <button onclick="copyPixKey()" class="bg-mariano-800 hover:bg-mariano-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shrink-0">
+                                    <i class="far fa-copy"></i>
+                                    <span id="copy-btn-text">Copiar</span>
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-2">Favorecido: Diocese do Xingu - Paróquia N. Sra. do Perpétuo Socorro</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4 flex items-center justify-between text-xs text-slate-500">
+                        <span>Deus abençoe sua generosidade!</span>
+                        <i class="fas fa-praying-hands text-dourado-600"></i>
+                    </div>
+                </div>
+
+                <!-- CONTATO E CONTATOS PAROQUIAIS -->
+                <div class="bg-white p-8 rounded-3xl shadow-md border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-12 h-12 rounded-2xl bg-mariano-100 text-mariano-700 flex items-center justify-center text-2xl">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-2xl font-bold text-slate-900">Secretaria & Localização</h3>
+                                <p class="text-xs text-slate-500">Atendimento Paroquial</p>
+                            </div>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-slate-600 mb-6">
+                            <li class="flex items-start space-x-3">
+                                <i class="fas fa-map-marker-alt text-mariano-600 mt-1"></i>
+                                <span><strong>Endereço:</strong> Centro - Altamira/PA (Diocese do Xingu / Região do Xingu)</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <i class="fas fa-phone text-mariano-600"></i>
+                                <span><strong>Telefone Secretaria:</strong> (93) 3515-0000</span>
+                            </li>
+                            <li class="flex items-center space-x-3">
+                                <i class="fab fa-whatsapp text-green-600 text-base"></i>
+                                <span><strong>WhatsApp Paroquial:</strong> (93) 99100-0000</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <i class="far fa-clock text-mariano-600 mt-1"></i>
+                                <span><strong>Horário Secretaria:</strong> Segunda a Sexta: 08h às 12h e 14h às 18h | Sábado: 08h às 12h</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <a href="https://wa.me/5593991000000" target="_blank" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl transition-all text-center flex items-center justify-center gap-2 shadow-md">
+                        <i class="fab fa-whatsapp text-lg"></i> Falar com a Secretaria no WhatsApp
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-mariano-900 text-slate-400 py-12 border-t border-mariano-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-center md:text-left">
+                
+                <!-- Coluna 1 -->
+                <div>
+                    <div class="flex items-center justify-center md:justify-start space-x-2 mb-3">
+                        <i class="fas fa-cross text-dourado-400"></i>
+                        <span class="font-serif font-bold text-white text-base">Paróquia N. Sra. do Perpétuo Socorro</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Diocese do Xingu — Altamira/PA.<br>
+                        A serviço do Reino de Deus na Amazônia.
+                    </p>
+                </div>
+
+                <!-- Coluna 2 -->
+                <div class="text-xs space-y-2">
+                    <p class="font-bold text-white uppercase tracking-wider mb-2">Links Rápidos</p>
+                    <div><a href="#horarios" class="hover:text-dourado-400 transition-colors">Horários de Missas</a></div>
+                    <div><a href="#avisos" class="hover:text-dourado-400 transition-colors">Avisos Paroquiais</a></div>
+                    <div><a href="#liturgia" class="hover:text-dourado-400 transition-colors">Intenções de Oração</a></div>
+                    <div><a href="#pascom" class="hover:text-dourado-400 transition-colors">Seja Pascom</a></div>
+                </div>
+
+                <!-- Coluna 3 -->
+                <div class="text-xs space-y-2">
+                    <p class="font-bold text-white uppercase tracking-wider mb-2">Desenvolvido por</p>
+                    <p class="text-slate-300">Pascom - Pastoral da Comunicação Paroquial</p>
+                    <p class="text-slate-500">"Comunicar a Verdade no Amor"</p>
+                </div>
+
+            </div>
+
+            <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500">
+                <p>&copy; 2026 Paróquia Nossa Senhora do Perpétuo Socorro — Diocese do Xingu. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LÓGICA E INTERAÇÕES -->
+    <script>
+        // 1. MENU MOBILE TOGGLE
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            }
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            });
+        });
+
+        // 2. TOAST NOTIFICATION
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('toast-animate');
+
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('toast-animate');
+            }, 3000);
+        }
+
+        // 3. COPIAR CHAVE PIX
+        function copyPixKey() {
+            const pixKey = document.getElementById('pix-key').innerText;
+            const btnText = document.getElementById('copy-btn-text');
+            
+            const tempInput = document.createElement('input');
+            tempInput.value = pixKey;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            btnText.textContent = 'Copiado!';
+            showToast('Chave PIX copiada para a área de transferência!');
+
+            setTimeout(() => {
+                btnText.textContent = 'Copiar';
+            }, 3000);
+        }
+
+        // 4. FILTRO DE AVISOS PAROQUIAIS
+        function filterPosts(category) {
+            const cards = document.querySelectorAll('.post-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'bg-mariano-800', 'text-white');
+                btn.classList.add('bg-white', 'text-slate-700');
+            });
+
+            event.currentTarget.classList.remove('bg-white', 'text-slate-700');
+            event.currentTarget.classList.add('active', 'bg-mariano-800', 'text-white');
+
+            cards.forEach(card => {
+                if (category === 'todos' || card.dataset.category === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 5. INTENÇÕES DE ORAÇÃO (STORAGE LOCAL + LISTA DINÂMICA)
+        const initialPrayers = [
+            { name: "Dona Maria Francisca", text: "Pela saúde da minha família e por todas as comunidades da Amazônia." },
+            { name: "João Paulo", text: "Em ação de graças pelo trabalho e sabedoria aos nossos sacerdotes." },
+            { name: "Anônimo", text: "Pelos enfermos da nossa diocese e pela paz em nossas famílias." }
+        ];
+
+        function loadPrayers() {
+            const stored = localStorage.getItem('pascom_prayers');
+            const prayers = stored ? JSON.parse(stored) : initialPrayers;
+            const listContainer = document.getElementById('prayers-list');
+            listContainer.innerHTML = '';
+
+            prayers.slice(-5).reverse().forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs';
+                item.innerHTML = `
+                    <div class="font-bold text-mariano-900 mb-1 flex items-center justify-between">
+                        <span>${escapeHtml(p.name)}</span>
+                        <span class="text-[10px] text-slate-400 font-normal">Prece recebida</span>
+                    </div>
+                    <p class="text-slate-600 italic">"${escapeHtml(p.text)}"</p>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        document.getElementById('pray-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('pray-name');
+            const textInput = document.getElementById('pray-text');
+
+            const name = nameInput.value.trim() || 'Anônimo';
+            const text = textInput.value.trim();
+
+            if(!text) return;
+
+            const stored = localStorage.getItem('pascom_prayers');
+            const prayers = stored ? JSON.parse(stored) : [...initialPrayers];
+
+            prayers.push({ name, text });
+            localStorage.setItem('pascom_prayers', JSON.stringify(prayers));
+
+            nameInput.value = '';
+            textInput.value = '';
+
+            loadPrayers();
+            showToast('Sua intenção de oração foi registrada!');
+        });
+
+        // 6. FORMULÁRIO DE RECRUTAMENTO PASCOM
+        document.getElementById('pascom-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showToast('Obrigado! Sua inscrição foi recebida pela equipe da Pascom.');
+            this.reset();
+        });
+
+        // 7. LIGHTBOX FOTOS
+        function openLightbox(src, caption) {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const cap = document.getElementById('lightbox-caption');
+
+            img.src = src;
+            cap.textContent = caption;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            lightbox.classList.remove('flex');
+        }
+
+        // Fechar lightbox ao clicar fora da imagem
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if(e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Inicializar
+        window.onload = function() {
+            loadPrayers();
+        };
+    </script>
+</body>
+</html>
